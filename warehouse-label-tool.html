@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>DockTag — Warehouse Label Printing Tool</title>
+<title>Eyewa — Warehouse Label Printing Tool</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -14,7 +14,7 @@
   --bg:#12161a; --bg-soft:#171c21; --elev:#1c232a; --elev-2:#232b33;
   --sidebar:#0d1114; --border:#2a323b; --border-soft:#232a31;
   --text:#e8ecef; --text-dim:#93a0ab; --text-faint:#5d6a75;
-  --accent:#ffc629; --accent-ink:#1a1400; --accent-dim:#caa020;
+  --accent:#2ab5a5; --accent-ink:#ffffff; --accent-dim:#229488;
   --accent2:#ff6b35; --success:#3ddc97; --danger:#ff5470;
   --radius:10px; --radius-lg:16px;
   --font-display:'Barlow Condensed',sans-serif;
@@ -26,7 +26,7 @@ html[data-theme="light"]{
   --bg:#eef1f3; --bg-soft:#e7ebee; --elev:#ffffff; --elev-2:#f5f7f8;
   --sidebar:#14181c; --border:#d7dee3; --border-soft:#e3e8eb;
   --text:#171b1f; --text-dim:#5b6772; --text-faint:#8b96a0;
-  --accent:#c9820a; --accent-ink:#fff; --accent-dim:#a56b08;
+  --accent:#1f9587; --accent-ink:#ffffff; --accent-dim:#187e72;
   --accent2:#d6501f; --success:#1f9d6e; --danger:#d63852;
   --shadow:0 8px 24px rgba(20,24,28,.08);
 }
@@ -45,7 +45,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);}
 .app-shell{display:grid; grid-template-columns:236px 1fr; height:100vh;}
 .sidebar{background:var(--sidebar); color:#dfe6ec; display:flex; flex-direction:column; padding:20px 14px; border-right:1px solid rgba(255,255,255,.06);}
 .brand{display:flex; align-items:center; gap:10px; padding:6px 8px 22px 8px;}
-.brand .mark{width:34px; height:34px; border-radius:8px; background:var(--accent); color:var(--accent-ink); display:flex; align-items:center; justify-content:center; font-weight:800; font-family:var(--font-display); font-size:18px; flex:none;}
+.brand .mark{width:34px; height:34px; border-radius:8px; background:#2ab5a5; color:#ffffff; display:flex; align-items:center; justify-content:center; font-weight:800; font-family:var(--font-display); font-size:18px; flex:none;}
 .brand .name{font-family:var(--font-display); font-weight:700; font-size:20px; letter-spacing:.04em; color:#fff;}
 .brand .name small{display:block; font-family:var(--font-body); font-size:10px; letter-spacing:.12em; color:#7c8b98; font-weight:500; text-transform:uppercase;}
 .nav{display:flex; flex-direction:column; gap:3px; flex:1; margin-top:6px;}
@@ -138,7 +138,7 @@ td{padding:10px 12px; border-bottom:1px solid var(--border-soft); color:var(--te
 tr:hover td{background:var(--elev-2);}
 .table-wrap{background:var(--elev); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;}
 .tag{display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;}
-.tag.text{background:rgba(255,198,41,.15); color:var(--accent);}
+.tag.text{background:rgba(42,181,165,.15); color:var(--accent);}
 .tag.qr{background:rgba(61,220,151,.15); color:var(--success);}
 .tag.awb{background:rgba(255,107,53,.15); color:var(--accent2);}
 .empty-state{text-align:center; padding:50px 20px; color:var(--text-faint);}
@@ -186,7 +186,7 @@ tr:hover td{background:var(--elev-2);}
 
 /* file drop */
 .dropzone{border:2px dashed var(--border); border-radius:10px; padding:22px; text-align:center; color:var(--text-dim); font-size:13px; transition:border-color .15s, background .15s;}
-.dropzone.drag{border-color:var(--accent); background:rgba(255,198,41,.06);}
+.dropzone.drag{border-color:var(--accent); background:rgba(42,181,165,.08);}
 .dropzone input{display:none;}
 
 /* queue table checkbox col */
@@ -217,8 +217,8 @@ tr:hover td{background:var(--elev-2);}
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="brand">
-      <div class="mark">DT</div>
-      <div class="name">DockTag<small>Label Printing</small></div>
+      <div class="mark">e</div>
+      <div class="name">Eyewa<small>Label Printing</small></div>
     </div>
     <div class="nav" id="nav">
       <button class="nav-item" data-view="dashboard">
@@ -251,7 +251,7 @@ tr:hover td{background:var(--elev-2);}
         Admin Panel
       </button>
     </div>
-    <div class="sidebar-foot">DockTag v1.0 · Offline Mode</div>
+    <div class="sidebar-foot">Eyewa v1.0 · Offline Mode</div>
   </div>
 
   <!-- MAIN -->
@@ -291,6 +291,10 @@ tr:hover td{background:var(--elev-2);}
               <label class="field-label">Label Text</label>
               <textarea id="text-label-text" rows="3" placeholder="Enter custom text, or select a SKU above…"></textarea>
             </div>
+            <div class="field" style="display:flex; align-items:center; gap:8px;">
+              <input type="checkbox" class="chk" id="text-include-qr">
+              <label for="text-include-qr" style="font-size:13px; color:var(--text-dim); cursor:pointer;">Include QR Code (positioned to the right of the text)</label>
+            </div>
             <div class="row" style="justify-content:space-between;">
               <div class="field" style="margin-bottom:0;">
                 <label class="field-label">Quantity</label>
@@ -305,9 +309,10 @@ tr:hover td{background:var(--elev-2);}
           <div class="card">
             <div class="card-title">Live Preview</div>
             <div class="label-preview-wrap">
-              <div class="ticket ticket-text-label">
+              <div class="ticket ticket-text-label" id="text-ticket-preview" style="gap:10px;">
                 <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-                <div class="fit-text" id="text-preview">SAMPLE TEXT</div>
+                <div class="fit-text" id="text-preview" style="flex:1; min-width:0;">SAMPLE TEXT</div>
+                <canvas id="text-qr-canvas" width="70" height="70" style="display:none; flex:none;"></canvas>
               </div>
             </div>
           </div>
@@ -374,6 +379,10 @@ tr:hover td{background:var(--elev-2);}
               <label class="field-label">Label Text</label>
               <textarea id="awb-label-text" rows="3" placeholder="Enter custom AWB / shipment text…"></textarea>
             </div>
+            <div class="field" style="display:flex; align-items:center; gap:8px;">
+              <input type="checkbox" class="chk" id="awb-include-qr">
+              <label for="awb-include-qr" style="font-size:13px; color:var(--text-dim); cursor:pointer;">Include QR Code (top if portrait, right side if landscape)</label>
+            </div>
             <div class="row" style="justify-content:space-between;">
               <div class="field" style="margin-bottom:0;">
                 <label class="field-label">Quantity</label>
@@ -388,10 +397,10 @@ tr:hover td{background:var(--elev-2);}
           <div class="card">
             <div class="card-title">Live Preview</div>
             <div class="label-preview-wrap">
-              <div class="ticket ticket-awb-label">
+              <div class="ticket ticket-awb-label" id="awb-ticket-preview" style="gap:10px;">
                 <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-                <div class="awb-sub">Warehouse AWB Label</div>
-                <div class="fit-text" id="awb-preview">SAMPLE AWB TEXT</div>
+                <canvas id="awb-qr-canvas" width="80" height="80" style="display:none; flex:none;"></canvas>
+                <div class="fit-text" id="awb-preview" style="flex:1; min-width:0;">SAMPLE AWB TEXT</div>
               </div>
             </div>
           </div>
@@ -428,32 +437,6 @@ tr:hover td{background:var(--elev-2);}
         <div class="section-head"><h2>Settings</h2></div>
         <div class="settings-grid">
           <div class="card settings-card">
-            <h3>SKU Database</h3>
-            <p class="desc">Import or replace the SKU database used across all label modules.</p>
-            <div class="dropzone" id="settings-dropzone">
-              <input type="file" id="settings-file-input" accept=".xlsx,.xls,.csv">
-              <div>Drop Excel/CSV file here or <b style="color:var(--accent);">browse</b></div>
-              <div style="margin-top:6px; font-size:11.5px;">Single-column SKU list (.xlsx, .xls, .csv)</div>
-            </div>
-            <div class="row" style="margin-top:12px;">
-              <button class="btn" id="settings-export-db">Export Database</button>
-            </div>
-          </div>
-          <div class="card settings-card">
-            <h3>Application Backup</h3>
-            <p class="desc">Backup or restore all application data: SKUs, history, and settings.</p>
-            <div class="row">
-              <button class="btn" id="settings-backup">Backup Data</button>
-              <button class="btn" id="settings-restore-trigger">Restore Data</button>
-              <input type="file" id="settings-restore-input" accept=".json" style="display:none;">
-            </div>
-          </div>
-          <div class="card settings-card">
-            <h3>Print History</h3>
-            <p class="desc">Export the full print history log as a CSV file.</p>
-            <button class="btn" id="settings-export-history">Export History CSV</button>
-          </div>
-          <div class="card settings-card">
             <h3>Page Setup</h3>
             <p class="desc">Controls label orientation and margins directly — the app sets the exact printed page size, so this always takes effect regardless of your printer dialog's own orientation setting.</p>
             <div class="field">
@@ -480,12 +463,8 @@ tr:hover td{background:var(--elev-2);}
               <button class="theme-swatch" id="theme-pick-light">Light</button>
             </div>
           </div>
-          <div class="card settings-card">
-            <h3>Reset Application</h3>
-            <p class="desc">Erase all SKUs, history, and settings. This cannot be undone.</p>
-            <button class="btn btn-danger" id="settings-reset">Reset Application</button>
-          </div>
         </div>
+        <p style="color:var(--text-faint); font-size:12.5px; margin-top:18px;">Database management, backups, print history export, and application reset have moved to the <b>Admin Panel</b>.</p>
       </div>
 
       <!-- ADMIN -->
@@ -504,16 +483,20 @@ tr:hover td{background:var(--elev-2);}
           <div class="section-head"><h2>Admin Panel</h2><button class="btn btn-sm" id="admin-lock-btn">Lock Panel</button></div>
           <div class="settings-grid">
             <div class="card settings-card">
-              <h3>Replace SKU Database</h3>
-              <p class="desc">Upload a new SKU database, replacing the current one entirely.</p>
+              <h3>Import / Replace SKU Database</h3>
+              <p class="desc">Upload a SKU database. If one already exists, you'll be asked to confirm before it's replaced.</p>
               <div class="dropzone" id="admin-dropzone">
                 <input type="file" id="admin-file-input" accept=".xlsx,.xls,.csv">
                 <div>Drop file here or <b style="color:var(--accent);">browse</b></div>
+                <div style="margin-top:6px; font-size:11.5px;">Single-column SKU list (.xlsx, .xls, .csv)</div>
+              </div>
+              <div class="row" style="margin-top:12px;">
+                <button class="btn" id="admin-export-db">Export Database (CSV)</button>
               </div>
             </div>
             <div class="card settings-card">
               <h3>Backup / Restore Database</h3>
-              <p class="desc">Save the SKU database to a file, or restore it from a backup.</p>
+              <p class="desc">Save just the SKU database to a file, or restore it from a backup.</p>
               <div class="row">
                 <button class="btn" id="admin-backup-db">Backup DB</button>
                 <button class="btn" id="admin-restore-trigger">Restore DB</button>
@@ -521,9 +504,21 @@ tr:hover td{background:var(--elev-2);}
               </div>
             </div>
             <div class="card settings-card">
-              <h3>Clear Print History</h3>
-              <p class="desc">Permanently delete every print history record.</p>
-              <button class="btn btn-danger" id="admin-clear-history">Clear All History</button>
+              <h3>Application Backup</h3>
+              <p class="desc">Backup or restore all application data: SKUs, history, and settings.</p>
+              <div class="row">
+                <button class="btn" id="admin-full-backup">Backup Data</button>
+                <button class="btn" id="admin-full-restore-trigger">Restore Data</button>
+                <input type="file" id="admin-full-restore-input" accept=".json" style="display:none;">
+              </div>
+            </div>
+            <div class="card settings-card">
+              <h3>Print History</h3>
+              <p class="desc">Export the full print history log, or permanently clear it.</p>
+              <div class="row">
+                <button class="btn" id="admin-export-history">Export History CSV</button>
+                <button class="btn btn-danger" id="admin-clear-history">Clear All History</button>
+              </div>
             </div>
             <div class="card settings-card">
               <h3>Reset Application</h3>
@@ -546,7 +541,7 @@ tr:hover td{background:var(--elev-2);}
 
 <script>
 /* =========================================================
-   DOCKTAG WAREHOUSE LABEL PRINTING TOOL
+   EYEWA WAREHOUSE LABEL PRINTING TOOL
    Single-file offline application
    ========================================================= */
 
@@ -929,17 +924,43 @@ const textSearch = document.getElementById('text-sku-search');
 const textAcList = document.getElementById('text-ac-list');
 const textLabelText = document.getElementById('text-label-text');
 const textPreview = document.getElementById('text-preview');
+const textIncludeQr = document.getElementById('text-include-qr');
+const textQrCanvas = document.getElementById('text-qr-canvas');
+let textQrPreviewInstance = null;
 bindAutocomplete(textSearch, textAcList, (sku)=>{ textLabelText.value = sku; updateTextPreview(); });
 function updateTextPreview(){
-  textPreview.textContent = textLabelText.value || 'SAMPLE TEXT';
-  fitText(textPreview, 40, 10);
+  const value = textLabelText.value || 'SAMPLE TEXT';
+  textPreview.textContent = value;
+  const withQr = textIncludeQr.checked;
+  textQrCanvas.style.display = withQr ? 'block' : 'none';
+  fitText(textPreview, withQr ? 26 : 40, 9);
+  if(withQr){
+    try{
+      if(!textQrPreviewInstance) textQrPreviewInstance = new QRious({element:textQrCanvas, size:70, value});
+      else textQrPreviewInstance.set({value});
+    }catch(e){}
+  }
 }
 textLabelText.addEventListener('input', updateTextPreview);
+textIncludeQr.addEventListener('change', updateTextPreview);
 document.getElementById('text-print-btn').addEventListener('click', ()=>{
   const text = textLabelText.value.trim();
   const qty = Math.max(1, parseInt(document.getElementById('text-qty').value)||1);
   if(!text){ toast('Enter label text or select a SKU first.', 'error'); return; }
-  const page = `<div class="label-page"><div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; box-sizing:border-box; padding:2mm;"><div class="fit-text" data-maxfont="40" style="font-size:40px;">${escapeHtml(text)}</div></div></div>`;
+  const withQr = textIncludeQr.checked;
+  let inner;
+  if(withQr){
+    const canvas = document.createElement('canvas');
+    try{ new QRious({element:canvas, size:220, value:text}); }catch(e){}
+    const dataUrl = canvas.toDataURL('image/png');
+    inner = `<div style="width:100%; height:100%; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:3mm; text-align:center; box-sizing:border-box; padding:1.5mm;">
+      <div class="fit-text" data-maxfont="26" style="font-size:26px; flex:1; min-width:0;">${escapeHtml(text)}</div>
+      <img src="${dataUrl}" style="width:40%; max-width:14mm; height:auto; flex:none;">
+    </div>`;
+  } else {
+    inner = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; box-sizing:border-box; padding:2mm;"><div class="fit-text" data-maxfont="40" style="font-size:40px;">${escapeHtml(text)}</div></div>`;
+  }
+  const page = `<div class="label-page">${inner}</div>`;
   setPrintPageStyle(3.5, 1.5, 'cm');
   doPrint(Array(qty).fill(page).join(''));
   logPrint('Text', text, qty);
@@ -952,14 +973,63 @@ const awbSearch = document.getElementById('awb-sku-search');
 const awbAcList = document.getElementById('awb-ac-list');
 const awbLabelText = document.getElementById('awb-label-text');
 const awbPreview = document.getElementById('awb-preview');
+const awbIncludeQr = document.getElementById('awb-include-qr');
+const awbQrCanvas = document.getElementById('awb-qr-canvas');
+const awbTicketPreview = document.getElementById('awb-ticket-preview');
+let awbQrPreviewInstance = null;
 bindAutocomplete(awbSearch, awbAcList, (sku)=>{ awbLabelText.value = sku; updateAwbPreview(); });
-function updateAwbPreview(){ awbPreview.textContent = awbLabelText.value || 'SAMPLE AWB TEXT'; fitText(awbPreview, 34, 10); }
+function updateAwbLayoutOrientation(){
+  const landscape = State.settings.orientation === 'landscape';
+  awbTicketPreview.style.flexDirection = landscape ? 'row' : 'column';
+  awbQrCanvas.style.order = landscape ? '1' : '0';
+  awbPreview.style.order = landscape ? '0' : '1';
+  awbTicketPreview.style.width = landscape ? '460px' : '340px';
+  awbTicketPreview.style.height = landscape ? '240px' : '220px';
+}
+function updateAwbPreview(){
+  const value = awbLabelText.value || 'SAMPLE AWB TEXT';
+  awbPreview.textContent = value;
+  const withQr = awbIncludeQr.checked;
+  awbQrCanvas.style.display = withQr ? 'block' : 'none';
+  updateAwbLayoutOrientation();
+  fitText(awbPreview, withQr ? 26 : 34, 9);
+  if(withQr){
+    try{
+      if(!awbQrPreviewInstance) awbQrPreviewInstance = new QRious({element:awbQrCanvas, size:80, value});
+      else awbQrPreviewInstance.set({value});
+    }catch(e){}
+  }
+}
 awbLabelText.addEventListener('input', updateAwbPreview);
+awbIncludeQr.addEventListener('change', updateAwbPreview);
 document.getElementById('awb-print-btn').addEventListener('click', ()=>{
   const text = awbLabelText.value.trim();
   const qty = Math.max(1, parseInt(document.getElementById('awb-qty').value)||1);
   if(!text){ toast('Enter label text or select a SKU first.', 'error'); return; }
-  const page = `<div class="label-page"><div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; box-sizing:border-box; padding:4mm;"><div class="fit-text" data-maxfont="52" style="font-size:52px;">${escapeHtml(text)}</div></div></div>`;
+  const withQr = awbIncludeQr.checked;
+  const landscape = State.settings.orientation === 'landscape';
+  let inner;
+  if(withQr){
+    const canvas = document.createElement('canvas');
+    try{ new QRious({element:canvas, size:320, value:text}); }catch(e){}
+    const dataUrl = canvas.toDataURL('image/png');
+    if(landscape){
+      // Horizontal AWB: QR on the right side, text on the left
+      inner = `<div style="width:100%; height:100%; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:6mm; text-align:center; box-sizing:border-box; padding:4mm;">
+        <div class="fit-text" data-maxfont="40" style="font-size:40px; flex:1; min-width:0;">${escapeHtml(text)}</div>
+        <img src="${dataUrl}" style="width:36%; max-width:55mm; height:auto; flex:none;">
+      </div>`;
+    } else {
+      // Vertical AWB: QR on top, text below
+      inner = `<div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6mm; text-align:center; box-sizing:border-box; padding:4mm;">
+        <img src="${dataUrl}" style="width:42%; max-width:55mm; height:auto; flex:none;">
+        <div class="fit-text" data-maxfont="40" style="font-size:40px; flex:1; min-width:0;">${escapeHtml(text)}</div>
+      </div>`;
+    }
+  } else {
+    inner = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; box-sizing:border-box; padding:4mm;"><div class="fit-text" data-maxfont="52" style="font-size:52px;">${escapeHtml(text)}</div></div>`;
+  }
+  const page = `<div class="label-page">${inner}</div>`;
   setPrintPageStyle(4, 6);
   doPrint(Array(qty).fill(page).join(''));
   logPrint('AWB', text, qty);
@@ -1071,46 +1141,7 @@ document.getElementById('qr-print-all').addEventListener('click', ()=>{
   toast(`Printing ${total} QR label${total>1?'s':''}…`, 'success');
 });
 
-/* ---------- SETTINGS MODULE ---------- */
-wireDropzone('settings-dropzone', 'settings-file-input', (file)=>{
-  const replacing = State.skus.length>0;
-  const doImport = ()=> importSkuFile(file);
-  if(replacing){
-    showModal({title:'Replace existing database?', message:`This will replace the current database of ${State.skus.length.toLocaleString()} SKUs with the contents of "${file.name}".`, confirmText:'Replace', danger:true, onConfirm:doImport});
-  } else doImport();
-});
-document.getElementById('settings-export-db').addEventListener('click', exportDatabaseCSV);
-document.getElementById('settings-export-history').addEventListener('click', ()=> document.getElementById('hist-export').click());
-
-function fullBackupObject(){
-  return { skus: State.skus, meta: State.meta, history: State.history, settings: State.settings, admin: State.admin, queue: State.queue, exportedAt: new Date().toISOString() };
-}
-document.getElementById('settings-backup').addEventListener('click', ()=>{
-  downloadBlob(JSON.stringify(fullBackupObject(), null, 2), `docktag-backup-${Date.now()}.json`, 'application/json');
-  toast('Backup file downloaded.', 'success');
-});
-document.getElementById('settings-restore-trigger').addEventListener('click', ()=> document.getElementById('settings-restore-input').click());
-document.getElementById('settings-restore-input').addEventListener('change', (e)=>{
-  const file = e.target.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev)=>{
-    try{
-      const data = JSON.parse(ev.target.result);
-      showModal({title:'Restore application data?', message:'This will overwrite all current data (SKUs, history, settings) with the contents of the backup file.', confirmText:'Restore', danger:true, onConfirm:()=>{
-        if(Array.isArray(data.skus)) State.skus = data.skus;
-        if(data.meta) State.meta = data.meta;
-        if(Array.isArray(data.history)) State.history = data.history;
-        if(data.settings) State.settings = Object.assign(State.settings, data.settings);
-        if(data.admin) State.admin = data.admin;
-        if(Array.isArray(data.queue)) State.queue = data.queue;
-        saveSkus(); saveMeta(); saveHistory(); saveSettings(); saveAdmin(); saveQueue();
-        toast('Application data restored.', 'success');
-        renderDashboard(); renderHistory(); renderQueue(); loadMarginInputs(); applyTheme(State.settings.theme);
-      }});
-    }catch(err){ toast('Invalid backup file.', 'error'); }
-  };
-  reader.readAsText(file); e.target.value='';
-});
+/* ---------- SETTINGS MODULE (Page Setup + Appearance only) ---------- */
 function loadMarginInputs(){
   document.getElementById('margin-top').value = State.settings.marginTop;
   document.getElementById('margin-right').value = State.settings.marginRight;
@@ -1122,8 +1153,8 @@ function setOrientationButtons(o){
   document.getElementById('orientation-portrait').classList.toggle('active', o==='portrait');
   document.getElementById('orientation-landscape').classList.toggle('active', o==='landscape');
 }
-document.getElementById('orientation-portrait').addEventListener('click', ()=>{ State.settings.orientation='portrait'; setOrientationButtons('portrait'); });
-document.getElementById('orientation-landscape').addEventListener('click', ()=>{ State.settings.orientation='landscape'; setOrientationButtons('landscape'); });
+document.getElementById('orientation-portrait').addEventListener('click', ()=>{ State.settings.orientation='portrait'; setOrientationButtons('portrait'); updateAwbPreview(); });
+document.getElementById('orientation-landscape').addEventListener('click', ()=>{ State.settings.orientation='landscape'; setOrientationButtons('landscape'); updateAwbPreview(); });
 document.getElementById('margin-save').addEventListener('click', ()=>{
   State.settings.marginTop = parseFloat(document.getElementById('margin-top').value)||0;
   State.settings.marginRight = parseFloat(document.getElementById('margin-right').value)||0;
@@ -1134,9 +1165,10 @@ document.getElementById('margin-save').addEventListener('click', ()=>{
 });
 document.getElementById('theme-pick-dark').addEventListener('click', ()=> applyTheme('dark'));
 document.getElementById('theme-pick-light').addEventListener('click', ()=> applyTheme('light'));
-document.getElementById('settings-reset').addEventListener('click', ()=>{
-  showModal({title:'Reset application?', message:'All SKUs, print history, and settings will be permanently erased. This cannot be undone.', confirmText:'Reset Everything', danger:true, onConfirm:resetApplication});
-});
+
+function fullBackupObject(){
+  return { skus: State.skus, meta: State.meta, history: State.history, settings: State.settings, admin: State.admin, queue: State.queue, exportedAt: new Date().toISOString() };
+}
 function resetApplication(){
   Object.values(DB_KEYS).forEach(k=> localStorage.removeItem(k));
   toast('Application reset. Reloading…', 'success');
@@ -1164,9 +1196,15 @@ document.getElementById('admin-lock-btn').addEventListener('click', ()=>{
   document.getElementById('admin-locked').style.display='flex';
   document.getElementById('admin-unlocked').style.display='none';
 });
+// Import / replace SKU database — confirms only when a database already exists
 wireDropzone('admin-dropzone', 'admin-file-input', (file)=>{
-  showModal({title:'Replace SKU database?', message:`This will replace the entire database with "${file.name}".`, confirmText:'Replace', danger:true, onConfirm:()=>importSkuFile(file)});
+  const replacing = State.skus.length>0;
+  const doImport = ()=> importSkuFile(file);
+  if(replacing){
+    showModal({title:'Replace existing database?', message:`This will replace the current database of ${State.skus.length.toLocaleString()} SKUs with the contents of "${file.name}".`, confirmText:'Replace', danger:true, onConfirm:doImport});
+  } else doImport();
 });
+document.getElementById('admin-export-db').addEventListener('click', exportDatabaseCSV);
 document.getElementById('admin-backup-db').addEventListener('click', ()=>{
   downloadBlob(JSON.stringify({skus:State.skus, meta:State.meta}, null, 2), `sku-database-backup-${Date.now()}.json`, 'application/json');
   toast('Database backup downloaded.', 'success');
@@ -1188,6 +1226,33 @@ document.getElementById('admin-restore-input').addEventListener('change', (e)=>{
   };
   reader.readAsText(file); e.target.value='';
 });
+document.getElementById('admin-full-backup').addEventListener('click', ()=>{
+  downloadBlob(JSON.stringify(fullBackupObject(), null, 2), `eyewa-backup-${Date.now()}.json`, 'application/json');
+  toast('Backup file downloaded.', 'success');
+});
+document.getElementById('admin-full-restore-trigger').addEventListener('click', ()=> document.getElementById('admin-full-restore-input').click());
+document.getElementById('admin-full-restore-input').addEventListener('change', (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    try{
+      const data = JSON.parse(ev.target.result);
+      showModal({title:'Restore application data?', message:'This will overwrite all current data (SKUs, history, settings) with the contents of the backup file.', confirmText:'Restore', danger:true, onConfirm:()=>{
+        if(Array.isArray(data.skus)) State.skus = data.skus;
+        if(data.meta) State.meta = data.meta;
+        if(Array.isArray(data.history)) State.history = data.history;
+        if(data.settings) State.settings = Object.assign(State.settings, data.settings);
+        if(data.admin) State.admin = data.admin;
+        if(Array.isArray(data.queue)) State.queue = data.queue;
+        saveSkus(); saveMeta(); saveHistory(); saveSettings(); saveAdmin(); saveQueue();
+        toast('Application data restored.', 'success');
+        renderDashboard(); renderHistory(); renderQueue(); loadMarginInputs(); applyTheme(State.settings.theme);
+      }});
+    }catch(err){ toast('Invalid backup file.', 'error'); }
+  };
+  reader.readAsText(file); e.target.value='';
+});
+document.getElementById('admin-export-history').addEventListener('click', ()=> document.getElementById('hist-export').click());
 document.getElementById('admin-clear-history').addEventListener('click', ()=>{
   showModal({title:'Clear all history?', message:'All print history records will be permanently deleted.', confirmText:'Clear All', danger:true, onConfirm:()=>{
     State.history = []; saveHistory(); renderHistory(); renderDashboard(); toast('Print history cleared.', 'success');
@@ -1227,6 +1292,8 @@ function init(){
   applyMarginStyle();
   switchView('dashboard');
   renderQueue();
+  updateTextPreview();
+  updateAwbPreview();
 }
 init();
 </script>
