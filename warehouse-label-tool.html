@@ -471,7 +471,7 @@ tr:hover td{background:var(--elev-2);}
       <div class="view" id="view-admin">
         <div id="admin-locked" class="lock-screen">
           <div class="lock-card">
-            <div class="mark"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5Z"/></svg></div>
+            <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5Z"/></svg></div>
             <h3 class="disp" style="font-size:20px; margin-bottom:6px;">Admin Access</h3>
             <p style="color:var(--text-dim); font-size:13px; margin-bottom:16px;">Enter the admin password to continue.</p>
             <input type="password" id="admin-password-input" placeholder="Password" style="width:100%; margin-bottom:12px; text-align:center;">
@@ -492,6 +492,7 @@ tr:hover td{background:var(--elev-2);}
               </div>
               <div class="row" style="margin-top:12px;">
                 <button class="btn" id="admin-export-db">Export Database (CSV)</button>
+                <button class="btn" id="admin-restore-builtin">Restore Built-in Database</button>
               </div>
             </div>
             <div class="card settings-card">
@@ -548,10 +549,25 @@ tr:hover td{background:var(--elev-2);}
 /* ---------- STORAGE / STATE MODULE ---------- */
 const DB_KEYS = { skus:'wh_skus', meta:'wh_sku_meta', history:'wh_history', settings:'wh_settings', admin:'wh_admin', queue:'wh_qr_queue' };
 
+/* ---------- BUILT-IN SKU DATABASE ----------
+   These SKUs are baked directly into the app file, so every user who opens
+   this HTML — on any device/browser — has the database available immediately,
+   with no upload step required. This matters because localStorage is
+   per-browser: without this, each new user/browser would start empty.
+
+   To update: replace the contents of this array with your SKU list (one
+   string per SKU), or ask Claude to embed a new Excel/CSV file for you.
+   Admins can still override this at any time via Admin Panel → Import/Replace
+   SKU Database — a manual import always takes precedence over this list. */
+const BUILTIN_SKUS = [
+  // PASTE_SKUS_HERE — e.g. "SKU-00001", "SKU-00002", ...
+];
+const BUILTIN_DB_VERSION = 'v1'; // bump this if you replace BUILTIN_SKUS so returning users pick up the update
+
 const State = {
   skus: [],          // sorted array of original-case SKU strings
   skusUpper: [],      // parallel sorted array (uppercase) for binary search
-  meta: { count:0, lastImport:null, filename:null },
+  meta: { count:0, lastImport:null, filename:null, source:null, builtinVersion:null },
   history: [],
   settings: { theme:'dark', marginTop:5, marginRight:5, marginBottom:5, marginLeft:5, orientation:'portrait' },
   admin: { hash:null },
@@ -571,6 +587,20 @@ function simpleHash(str){
   return (4294967296*(2097151 & h2) + (h1>>>0)).toString(16);
 }
 
+function seedBuiltinSkusIfNeeded(){
+  if(!BUILTIN_SKUS.length) return; // nothing embedded yet
+  const hasStoredDb = State.skus.length > 0;
+  const builtinAlreadyApplied = State.meta.source === 'builtin' && State.meta.builtinVersion === BUILTIN_DB_VERSION;
+  const userReplacedIt = State.meta.source === 'import'; // a manual import always wins, never overwritten
+  if(userReplacedIt) return;
+  if(hasStoredDb && builtinAlreadyApplied) return; // already seeded at this version, nothing to do
+  const uniq = Array.from(new Set(BUILTIN_SKUS.map(s=>String(s).trim()).filter(Boolean)));
+  uniq.sort((a,b)=> a.toUpperCase()<b.toUpperCase()?-1:a.toUpperCase()>b.toUpperCase()?1:0);
+  State.skus = uniq;
+  State.meta = { count: uniq.length, lastImport: new Date().toISOString(), filename: 'Built-in Database', source:'builtin', builtinVersion: BUILTIN_DB_VERSION };
+  saveSkus(); saveMeta();
+}
+
 function loadState(){
   try{ const s = localStorage.getItem(DB_KEYS.skus); if(s) State.skus = JSON.parse(s); }catch(e){}
   try{ const m = localStorage.getItem(DB_KEYS.meta); if(m) State.meta = JSON.parse(m); }catch(e){}
@@ -579,6 +609,7 @@ function loadState(){
   try{ const a = localStorage.getItem(DB_KEYS.admin); if(a) State.admin = JSON.parse(a); }catch(e){}
   try{ const q = localStorage.getItem(DB_KEYS.queue); if(q) State.queue = JSON.parse(q); }catch(e){}
   if(!State.admin.hash){ State.admin.hash = simpleHash('admin123'); saveAdmin(); }
+  seedBuiltinSkusIfNeeded();
   State.skusUpper = State.skus.map(s => s.toUpperCase());
 }
 function saveSkus(){ localStorage.setItem(DB_KEYS.skus, JSON.stringify(State.skus)); State.skusUpper = State.skus.map(s=>s.toUpperCase()); }
@@ -751,7 +782,7 @@ function importSkuFile(file, {silent=false}={}){
       uniq.sort((a,b)=> a.toUpperCase()<b.toUpperCase()?-1:a.toUpperCase()>b.toUpperCase()?1:0);
       State.skus = uniq;
       saveSkus();
-      State.meta = { count: uniq.length, lastImport: new Date().toISOString(), filename: file.name };
+      State.meta = { count: uniq.length, lastImport: new Date().toISOString(), filename: file.name, source:'import', builtinVersion:null };
       saveMeta();
       hideLoading();
       if(!silent) toast(`Imported ${uniq.length.toLocaleString()} SKUs from "${file.name}"`, 'success');
@@ -851,9 +882,10 @@ function renderDashboard(){
   const printedToday = State.history.filter(r=>r.date===today).reduce((s,r)=>s+r.qty,0);
   const totalPrinted = State.history.reduce((s,r)=>s+r.qty,0);
   const lastImport = State.meta.lastImport ? new Date(State.meta.lastImport).toLocaleString() : '—';
+  const sourceLabel = State.meta.source === 'builtin' ? 'built-in database' : (State.meta.filename ? 'from '+State.meta.filename : 'no file imported');
   const cards = [
-    {label:'Total SKUs', value: State.skus.length.toLocaleString(), foot: State.meta.filename ? 'from '+State.meta.filename : 'no file imported'},
-    {label:'Database Status', value: State.skus.length ? 'Loaded' : 'Empty', accent: !!State.skus.length, foot: State.skus.length ? 'Ready for search' : 'Import a database in Settings'},
+    {label:'Total SKUs', value: State.skus.length.toLocaleString(), foot: sourceLabel},
+    {label:'Database Status', value: State.skus.length ? 'Loaded' : 'Empty', accent: !!State.skus.length, foot: State.skus.length ? 'Ready for search' : 'Import a database in Admin Panel'},
     {label:'Last Import', value: State.meta.lastImport ? new Date(State.meta.lastImport).toLocaleDateString() : '—', foot: lastImport},
     {label:'Labels Printed Today', value: printedToday.toLocaleString(), accent:true, foot: today},
     {label:'Total Labels Printed', value: totalPrinted.toLocaleString(), foot: State.history.length + ' print jobs logged'}
@@ -1205,6 +1237,15 @@ wireDropzone('admin-dropzone', 'admin-file-input', (file)=>{
   } else doImport();
 });
 document.getElementById('admin-export-db').addEventListener('click', exportDatabaseCSV);
+document.getElementById('admin-restore-builtin').addEventListener('click', ()=>{
+  if(!BUILTIN_SKUS.length){ toast('No built-in database has been embedded in this file yet.', 'error'); return; }
+  showModal({title:'Restore built-in database?', message:'This will replace the current SKU database with the built-in list shipped in this file.', confirmText:'Restore Built-in', danger:true, onConfirm:()=>{
+    State.meta.source = null; // clear so seeding logic re-applies
+    seedBuiltinSkusIfNeeded();
+    renderDashboard();
+    toast('Built-in database restored.', 'success');
+  }});
+});
 document.getElementById('admin-backup-db').addEventListener('click', ()=>{
   downloadBlob(JSON.stringify({skus:State.skus, meta:State.meta}, null, 2), `sku-database-backup-${Date.now()}.json`, 'application/json');
   toast('Database backup downloaded.', 'success');
@@ -1220,6 +1261,7 @@ document.getElementById('admin-restore-input').addEventListener('change', (e)=>{
       showModal({title:'Restore database?', message:'This will replace the current SKU database with the contents of this backup.', confirmText:'Restore', danger:true, onConfirm:()=>{
         State.skus = data.skus; saveSkus();
         State.meta = data.meta || {count:data.skus.length, lastImport:new Date().toISOString(), filename:file.name};
+        State.meta.source = 'import';
         saveMeta(); renderDashboard(); toast('Database restored.', 'success');
       }});
     }catch(err){ toast('Invalid database backup file.', 'error'); }
