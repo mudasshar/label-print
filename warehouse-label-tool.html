@@ -18264,7 +18264,7 @@ function doPrint(htmlPages){
   document.documentElement.setAttribute('data-print','1');
   // allow layout to settle then trigger fit-adjustment for any .fit-text nodes present
   requestAnimationFrame(()=>{
-    area.querySelectorAll('.fit-text').forEach(el=> fitText(el, parseInt(el.dataset.maxfont||'56'), 8));
+    area.querySelectorAll('.fit-text').forEach(el=> fitText(el, parseInt(el.dataset.maxfont||'56'), parseInt(el.dataset.minfont||'8')));
     setTimeout(()=>{
       window.print();
     }, 30);
@@ -18493,13 +18493,13 @@ function buildQrPages(items){
     const model = (item.model||'').trim();
     const product = (item.product||'').trim();
     const subLines = [
-      model ? `<div class="fit-text" data-maxfont="52" style="font-size:52px; font-weight:700; font-family:var(--font-mono); width:100%; box-sizing:border-box; text-align:left; word-break:break-all; padding-left:14ch; text-indent:-14ch;">Model Number: ${escapeHtml(model)}</div>` : '',
-      product ? `<div class="fit-text" data-maxfont="52" style="font-size:52px; font-weight:700; font-family:var(--font-mono); width:100%; box-sizing:border-box; text-align:left; word-break:break-all; padding-left:14ch; text-indent:-14ch;">Product Name: ${escapeHtml(product)}</div>` : ''
+      model ? `<div class="fit-text" data-maxfont="52" data-minfont="26" style="font-size:52px; font-weight:700; font-family:var(--font-mono); width:100%; box-sizing:border-box; text-align:left; word-break:break-all; padding-left:14ch; text-indent:-14ch;">Model Number: ${escapeHtml(model)}</div>` : '',
+      product ? `<div class="fit-text" data-maxfont="52" data-minfont="26" style="font-size:52px; font-weight:700; font-family:var(--font-mono); width:100%; box-sizing:border-box; text-align:left; word-break:break-all; padding-left:14ch; text-indent:-14ch;">Product Name: ${escapeHtml(product)}</div>` : ''
     ].join('');
     const page = `<div class="label-page">
-      <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; box-sizing:border-box; padding:4mm; text-align:center;">
-        <img src="${dataUrl}" style="width:58%; max-width:70mm; height:auto;">
-        <div class="qr-sku-text fit-text" data-maxfont="52" style="font-size:52px; width:100%; box-sizing:border-box; text-align:left; word-break:break-all; padding-left:6ch; text-indent:-6ch;">SKU : ${escapeHtml(item.sku)}</div>
+      <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; box-sizing:border-box; padding:3mm; text-align:center;">
+        <img src="${dataUrl}" style="width:34%; max-width:38mm; height:auto; flex:none;">
+        <div class="qr-sku-text fit-text" data-maxfont="52" data-minfont="26" style="font-size:52px; width:100%; box-sizing:border-box; text-align:left; word-break:break-all; padding-left:6ch; text-indent:-6ch;">SKU : ${escapeHtml(item.sku)}</div>
         ${subLines}
       </div></div>`;
     for(let i=0;i<item.qty;i++){ pages += page; total++; }
