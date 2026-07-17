@@ -18405,11 +18405,11 @@ const qrPreviewProduct = document.getElementById('qr-preview-product');
 let qrPreviewInstance = null;
 function updateQrPreview(sku){
   const value = sku || 'SKU-000000';
-  qrPreviewText.textContent = 'SKU : ' + value; fitText(qrPreviewText, 14, 7);
+  qrPreviewText.textContent = 'SKU: ' + value; fitText(qrPreviewText, 14, 7);
   const model = qrModelInput.value.trim();
   const product = qrProductInput.value.trim();
   qrPreviewModel.style.display = model ? 'block' : 'none';
-  qrPreviewModel.textContent = 'Model Number: ' + model;
+  qrPreviewModel.textContent = 'Model: ' + model;
   qrPreviewProduct.style.display = product ? 'block' : 'none';
   qrPreviewProduct.textContent = 'Product Name: ' + product;
   try{
