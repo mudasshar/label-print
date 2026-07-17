@@ -130,7 +130,7 @@ label.field-label{display:block; font-size:12px; text-transform:uppercase; lette
 .fit-text{font-weight:700; line-height:1.08; word-break:break-word; white-space:pre-wrap; max-width:100%;}
 .awb-sub{font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; color:#777; text-transform:uppercase;}
 .qr-sku-text{font-family:var(--font-mono); font-weight:700; word-break:break-all; max-width:100%;}
-.qr-sub-text{font-family:var(--font-mono); font-weight:500; word-break:break-all; max-width:100%; font-size:12px; color:#444;}
+.qr-sub-text{font-family:var(--font-mono); font-weight:700; word-break:break-all; max-width:100%; font-size:17px;}
 
 /* tables */
 table{width:100%; border-collapse:collapse; font-size:13.5px;}
@@ -18493,8 +18493,8 @@ function buildQrPages(items){
     const model = (item.model||'').trim();
     const product = (item.product||'').trim();
     const subLines = [
-      model ? `<div class="fit-text" data-maxfont="18" style="font-size:18px; font-weight:500; font-family:var(--font-mono);">Model Number: ${escapeHtml(model)}</div>` : '',
-      product ? `<div class="fit-text" data-maxfont="18" style="font-size:18px; font-weight:500; font-family:var(--font-mono);">Product Name: ${escapeHtml(product)}</div>` : ''
+      model ? `<div class="fit-text" data-maxfont="22" style="font-size:22px; font-weight:700; font-family:var(--font-mono);">Model Number: ${escapeHtml(model)}</div>` : '',
+      product ? `<div class="fit-text" data-maxfont="22" style="font-size:22px; font-weight:700; font-family:var(--font-mono);">Product Name: ${escapeHtml(product)}</div>` : ''
     ].join('');
     const page = `<div class="label-page">
       <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; box-sizing:border-box; padding:4mm; text-align:center;">
