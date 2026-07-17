@@ -336,8 +336,8 @@ tr:hover td{background:var(--elev-2);}
                 <input type="text" id="qr-model-number" placeholder="e.g. MDL-2201">
               </div>
               <div class="field" style="flex:1; min-width:140px;">
-                <label class="field-label">Product Number (optional)</label>
-                <input type="text" id="qr-product-number" placeholder="e.g. PN-88213">
+                <label class="field-label">Product Name (optional)</label>
+                <input type="text" id="qr-product-number" placeholder="e.g. Wireless Mouse">
               </div>
             </div>
             <div class="row" style="justify-content:space-between;">
@@ -353,7 +353,7 @@ tr:hover td{background:var(--elev-2);}
             <div class="card-title" style="margin-top:10px;">Print Queue</div>
             <div class="table-wrap">
               <table>
-                <thead><tr><th style="width:30px;"><input type="checkbox" class="chk" id="qr-select-all"></th><th>SKU</th><th>Model No.</th><th>Product No.</th><th style="width:70px;">Qty</th><th style="width:80px;">Actions</th></tr></thead>
+                <thead><tr><th style="width:30px;"><input type="checkbox" class="chk" id="qr-select-all"></th><th>SKU</th><th>Model No.</th><th>Product Name</th><th style="width:70px;">Qty</th><th style="width:80px;">Actions</th></tr></thead>
                 <tbody id="qr-queue-body"></tbody>
               </table>
             </div>
@@ -18405,13 +18405,13 @@ const qrPreviewProduct = document.getElementById('qr-preview-product');
 let qrPreviewInstance = null;
 function updateQrPreview(sku){
   const value = sku || 'SKU-000000';
-  qrPreviewText.textContent = value; fitText(qrPreviewText, 17, 8);
+  qrPreviewText.textContent = 'SKU : ' + value; fitText(qrPreviewText, 14, 7);
   const model = qrModelInput.value.trim();
   const product = qrProductInput.value.trim();
   qrPreviewModel.style.display = model ? 'block' : 'none';
-  qrPreviewModel.textContent = 'Model: ' + model;
+  qrPreviewModel.textContent = 'Model Number: ' + model;
   qrPreviewProduct.style.display = product ? 'block' : 'none';
-  qrPreviewProduct.textContent = 'Product: ' + product;
+  qrPreviewProduct.textContent = 'Product Name: ' + product;
   try{
     if(!qrPreviewInstance) qrPreviewInstance = new QRious({element:qrPreviewCanvas, size:150, value});
     else qrPreviewInstance.set({value});
@@ -18493,13 +18493,13 @@ function buildQrPages(items){
     const model = (item.model||'').trim();
     const product = (item.product||'').trim();
     const subLines = [
-      model ? `<div class="fit-text" data-maxfont="20" style="font-size:20px; font-weight:500; font-family:var(--font-mono);">${escapeHtml(model)}</div>` : '',
-      product ? `<div class="fit-text" data-maxfont="20" style="font-size:20px; font-weight:500; font-family:var(--font-mono);">${escapeHtml(product)}</div>` : ''
+      model ? `<div class="fit-text" data-maxfont="18" style="font-size:18px; font-weight:500; font-family:var(--font-mono);">Model Number: ${escapeHtml(model)}</div>` : '',
+      product ? `<div class="fit-text" data-maxfont="18" style="font-size:18px; font-weight:500; font-family:var(--font-mono);">Product Name: ${escapeHtml(product)}</div>` : ''
     ].join('');
     const page = `<div class="label-page">
-      <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; box-sizing:border-box; padding:4mm; text-align:center;">
+      <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; box-sizing:border-box; padding:4mm; text-align:center;">
         <img src="${dataUrl}" style="width:58%; max-width:70mm; height:auto;">
-        <div class="qr-sku-text fit-text" data-maxfont="38" style="font-size:38px;">${escapeHtml(item.sku)}</div>
+        <div class="qr-sku-text fit-text" data-maxfont="22" style="font-size:22px;">SKU : ${escapeHtml(item.sku)}</div>
         ${subLines}
       </div></div>`;
     for(let i=0;i<item.qty;i++){ pages += page; total++; }
